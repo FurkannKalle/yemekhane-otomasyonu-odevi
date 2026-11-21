@@ -1,0 +1,53 @@
+@model BakiyeSayfasi
+@{
+    ViewData["Title"] = "Bakiye";
+    var turAdi = new Dictionary<string, string>
+    {
+        ["yukleme"] = "Yükleme",
+        ["rezervasyon"] = "Rezervasyon",
+        ["iade"] = "İade",
+    };
+}
+<h1>Bakiye</h1>
+
+<section class="kart bakiye-ozet">
+    <span class="soluk">Güncel bakiye</span>
+    <span class="bakiye-tutar">@Model.Bakiye.ToString("C")</span>
+</section>
+
+<section class="kart">
+    <h2>Bakiye yükle</h2>
+    <form asp-action="Yukle" method="post" class="yukle-form">
+        <div>
+            <label for="tutar">Tutar (TL)</label>
+                        <input id="tutar" name="tutar" type="text" inputmode="decimal" autocomplete="off" placeholder="ör. 50 ya da 12,50" required />
+        </div>
+        <button type="submit" class="dugme">Yükle</button>
+    </form>
+    <form asp-action="Yukle" method="post" class="hizli-tutar">
+        <span class="soluk">Hızlı yükle:</span>
+        <button type="submit" name="tutar" value="50" class="dugme dugme-ikincil">50 TL</button>
+        <button type="submit" name="tutar" value="100" class="dugme dugme-ikincil">100 TL</button>
+        <button type="submit" name="tutar" value="200" class="dugme dugme-ikincil">200 TL</button>
+    </form>
+</section>
+
+<h2>Hareket geçmişi</h2>
+<table class="tablo">
+    <thead>
+        <tr><th>Tarih</th><th>İşlem</th><th>Açıklama</th><th>Tutar</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var h in Model.Hareketler)
+        {
+            <tr>
+                <td data-etiket="Tarih">@h.Olusturma.ToString("dd.MM.yyyy HH:mm")</td>
+                <td data-etiket="İşlem">@turAdi[h.Tur]</td>
+                <td data-etiket="Açıklama">@h.Aciklama</td>
+                <td data-etiket="Tutar" class="@(h.Tutar > 0 ? "tutar-arti" : "tutar-eksi")">
+                    @(h.Tutar > 0 ? "+" : "")@h.Tutar.ToString("C")
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

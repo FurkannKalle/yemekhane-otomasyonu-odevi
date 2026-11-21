@@ -81,3 +81,23 @@ main.kapsayici { padding-block: 1.25rem 3rem; }
 .rozet-aktif { background: var(--basari-zemin); color: var(--basari); }
 .rozet-kullanildi { background: #E3ECF7; color: #24508A; }
 .rozet-iptal { background: var(--zemin); color: var(--metin-soluk); }
+
+.bakiye-ozet { display: flex; flex-direction: column; gap: 0.25rem; }
+.bakiye-tutar { font-size: 2.25rem; font-weight: 700; color: var(--ana-koyu); line-height: 1.1; }
+.yukle-form { display: grid; gap: 0.5rem; }
+@media (min-width: 640px) { .yukle-form { grid-template-columns: 1fr auto; align-items: end; } }
+.hizli-tutar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.75rem; }
+.tutar-arti { color: var(--basari); font-weight: 600; white-space: nowrap; }
+.tutar-eksi { color: var(--hata); font-weight: 600; white-space: nowrap; }
+
+.tablo { width: 100%; border-collapse: collapse; background: var(--yuzey); font-size: var(--boyut-kucuk); }
+.tablo th, .tablo td { text-align: left; padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--cizgi); }
+.tablo th { background: var(--zemin); }
+@media (max-width: 640px) {
+  .tablo thead { display: none; }
+  .tablo, .tablo tbody, .tablo tr, .tablo td { display: block; width: 100%; }
+  .tablo tr { border: 1px solid var(--cizgi); border-radius: var(--kose); margin-bottom: 0.75rem; padding: 0.25rem 0.75rem; }
+  .tablo td { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px dashed var(--cizgi); text-align: right; }
+  .tablo td:last-child { border-bottom: 0; }
+  .tablo td::before { content: attr(data-etiket); font-weight: 600; color: var(--metin-soluk); text-align: left; }
+}

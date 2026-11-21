@@ -25,6 +25,7 @@ builder.Services.AddScoped<MenuDeposu>();
 builder.Services.AddScoped<MenuServisi>();
 builder.Services.AddScoped<RezervasyonDeposu>();
 builder.Services.AddScoped<VeriKaynagi>();
+builder.Services.AddScoped<BakiyeDeposu>();
 
 var app = builder.Build();
 
