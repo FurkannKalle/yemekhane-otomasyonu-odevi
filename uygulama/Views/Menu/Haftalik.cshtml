@@ -1,0 +1,76 @@
+@model HaftalikSayfa
+@{
+    ViewData["Title"] = "Haftalık menü";
+    var dugmeMetni = new Dictionary<string, string>
+    {
+        ["rezerve"] = "Rezervasyonunuz var",
+        ["kullanildi"] = "Kullanıldı",
+        ["suresi_doldu"] = "Süre doldu",
+        ["dolu"] = "Kapasite dolu",
+    };
+    var oncekiHafta = Model.Baslangic.AddDays(-7).ToString("yyyy-MM-dd");
+    var sonrakiHafta = Model.Baslangic.AddDays(7).ToString("yyyy-MM-dd");
+}
+<h1>Haftalık menü ve rezervasyon</h1>
+
+<form method="get" asp-action="Haftalik" class="filtre">
+    <div>
+        <label for="yemekhaneId">Yemekhane</label>
+        <select id="yemekhaneId" name="yemekhaneId">
+            @foreach (var y in Model.Yemekhaneler)
+            {
+                <option value="@y.Id" selected="@(y.Id == Model.YemekhaneId)">@y.Ad</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label for="baslangic">Başlangıç günü</label>
+        <input id="baslangic" name="baslangic" type="date" value="@Model.Baslangic.ToString("yyyy-MM-dd")" />
+    </div>
+    <button type="submit" class="dugme">Göster</button>
+</form>
+
+<div class="hafta-gezinme">
+    <a class="dugme dugme-ikincil" asp-action="Haftalik" asp-route-yemekhaneId="@Model.YemekhaneId" asp-route-baslangic="@oncekiHafta">‹ Önceki hafta</a>
+    <a class="dugme dugme-ikincil" asp-action="Haftalik" asp-route-yemekhaneId="@Model.YemekhaneId" asp-route-baslangic="@sonrakiHafta">Sonraki hafta ›</a>
+</div>
+
+@if (Model.Menuler.Count == 0)
+{
+    <p class="bildirim">Bu tarihler için menü yok.</p>
+}
+
+@foreach (var gun in Model.Menuler.GroupBy(m => m.Tarih))
+{
+    <section class="gun">
+        <h2>@gun.Key.ToString("d MMMM dddd")</h2>
+        <div class="ogunler">
+            @foreach (var m in gun)
+            {
+                <article class="kart ogun-kart">
+                    <header>
+                        <h3>@m.Ogun</h3>
+                        <span class="fiyat">@m.Fiyat.ToString("C")</span>
+                    </header>
+                    <p class="soluk">Son saat @m.RezervasyonSon.ToString("HH:mm") · Boş yer <strong>@m.BosYer</strong></p>
+                    <a asp-action="Gunluk" asp-route-yemekhaneId="@Model.YemekhaneId"
+                       asp-route-tarih="@m.Tarih.ToString("yyyy-MM-dd")" asp-route-ogunId="@m.OgunId">Menüyü gör</a>
+
+                    @if (m.Durum == "acik")
+                    {
+                        <form asp-controller="Rezervasyon" asp-action="Yap" method="post">
+                            <input type="hidden" name="menuId" value="@m.MenuId" />
+                            <input type="hidden" name="yemekhaneId" value="@Model.YemekhaneId" />
+                            <input type="hidden" name="baslangic" value="@Model.Baslangic.ToString("yyyy-MM-dd")" />
+                            <button type="submit" class="dugme">Rezervasyon yap</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <button type="button" class="dugme" disabled>@dugmeMetni[m.Durum]</button>
+                    }
+                </article>
+            }
+        </div>
+    </section>
+}

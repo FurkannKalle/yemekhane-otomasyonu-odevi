@@ -22,4 +22,28 @@ public class MenuDeposu(OkumaDb okuma)
             .Where(d => d.MenuId == menuId)
             .Select(d => new DolulukBilgisi(d.Kapasite, d.BosYer, DateTime.Now < d.RezervasyonSon))
             .FirstOrDefaultAsync();
+    public Task<List<HaftalikMenu>> HaftalikAsync(int kullaniciId, int yemekhaneId, DateOnly baslangic)
+    {
+        var bitis = baslangic.AddDays(7);
+        return (from d in okuma.MenuDoluluklari
+                join m in okuma.Menuler on d.MenuId equals m.Id
+                where d.YemekhaneId == yemekhaneId && d.Tarih >= baslangic && d.Tarih < bitis
+                orderby d.Tarih, d.OgunId
+                select new HaftalikMenu
+                {
+                    MenuId = d.MenuId,
+                    Tarih = d.Tarih,
+                    OgunId = d.OgunId,
+                    Ogun = d.Ogun,
+                    RezervasyonSon = d.RezervasyonSon,
+                    RezervasyonAcik = DateTime.Now < d.RezervasyonSon,
+                    BosYer = d.BosYer,
+                    OgrenciFiyati = m.OgrenciFiyati,
+                    PersonelFiyati = m.PersonelFiyati,
+                    RezervasyonDurumu = okuma.Rezervasyonlar
+                        .Where(r => r.MenuId == d.MenuId && r.KullaniciId == kullaniciId)
+                        .Select(r => r.Durum)
+                        .FirstOrDefault(),
+                }).ToListAsync();
+    }
 }

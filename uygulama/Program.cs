@@ -23,6 +23,7 @@ builder.Services.AddSingleton<OturumServisi>();
 builder.Services.AddScoped<KullaniciDeposu>();
 builder.Services.AddScoped<MenuDeposu>();
 builder.Services.AddScoped<MenuServisi>();
+builder.Services.AddScoped<RezervasyonDeposu>();
 
 var app = builder.Build();
 

@@ -53,4 +53,34 @@ public class MenuDoluluk
     public int BosYer { get; set; }
     public decimal DolulukYuzde { get; set; }
     public DateTime RezervasyonSon { get; set; }
+}   
+[Table("menuler")]
+public class Menu
+{
+    public int Id { get; set; }
+    public int YemekhaneId { get; set; }
+    public DateOnly Tarih { get; set; }
+    public int OgunId { get; set; }
+    public decimal OgrenciFiyati { get; set; }
+    public decimal PersonelFiyati { get; set; }
+}
+
+[Table("rezervasyonlar")]
+public class Rezervasyon
+{
+    public int Id { get; set; }
+    public int KullaniciId { get; set; }
+    public int MenuId { get; set; }
+    public string Durum { get; set; } = "";     
+    public decimal Ucret { get; set; }
+    public DateTime Olusturma { get; set; }
+    public DateTime? KullanmaZamani { get; set; }
+    public DateTime? IptalZamani { get; set; }
+}
+
+public class RezervasyonSonucu
+{
+    [Column("rezervasyon_id")] public int RezervasyonId { get; set; }
+    [Column("ucret")] public decimal Ucret { get; set; }
+    [Column("bakiye")] public decimal Bakiye { get; set; }
 }

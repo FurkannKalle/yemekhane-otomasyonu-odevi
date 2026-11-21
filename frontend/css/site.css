@@ -49,3 +49,20 @@ main.kapsayici { padding-block: 1.25rem 3rem; }
   border-radius: var(--kose); font-size: var(--boyut-kucuk);
 }
 @media (min-width: 640px) { .menu-alt { grid-template-columns: repeat(3, 1fr); } }
+
+.hafta-gezinme { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.hafta-gezinme .dugme { flex: 1; text-align: center; }
+.gun { margin-bottom: 1.5rem; }
+.gun h2 { font-size: 1.05rem; border-bottom: 2px solid var(--cizgi); padding-bottom: 0.35rem; }
+.ogunler { display: grid; gap: 0.75rem; }
+@media (min-width: 720px) { .ogunler { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.ogun-kart { display: flex; flex-direction: column; gap: 0.5rem; margin: 0; }
+.ogun-kart header { display: flex; justify-content: space-between; align-items: baseline; }
+.ogun-kart h3 { margin: 0; font-size: 1rem; }
+.ogun-kart p { margin: 0; }
+.ogun-kart form, .ogun-kart > button { margin-top: auto; }
+.ogun-kart .dugme { width: 100%; }
+
+.dugme-ikincil { background: var(--yuzey); color: var(--ana); border: 1px solid var(--ana); text-decoration: none; }
+.dugme-ikincil:hover { background: var(--zemin); color: var(--ana-koyu); }
+.dugme:disabled { background: var(--cizgi); color: var(--metin-soluk); cursor: not-allowed; }

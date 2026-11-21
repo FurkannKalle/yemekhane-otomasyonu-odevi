@@ -39,6 +39,14 @@
     </header>
 
     <main class="kapsayici">
+            @if (TempData["Basari"] is string basari)
+        {
+            <p class="bildirim bildirim-basari" role="status">@basari</p>
+        }
+        @if (TempData["Hata"] is string hata)
+        {
+            <p class="bildirim bildirim-hata" role="alert">@hata</p>
+        }
         @RenderBody()
     </main>
 

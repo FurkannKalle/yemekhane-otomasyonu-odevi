@@ -21,4 +21,15 @@ public class MenuController(MenuDeposu menuler, MenuServisi menuServisi) : Oturu
         };
         return View(sayfa);
     }
+    public async Task<IActionResult> Haftalik(int yemekhaneId = 1, DateOnly? baslangic = null)
+    {
+        var ilkGun = baslangic ?? DateOnly.FromDateTime(DateTime.Now);
+        return View(new HaftalikSayfa
+        {
+            Yemekhaneler = await menuler.YemekhanelerAsync(),
+            YemekhaneId = yemekhaneId,
+            Baslangic = ilkGun,
+            Menuler = await menuServisi.HaftalikAsync(Oturum, yemekhaneId, ilkGun),
+        });
+    }
 }
