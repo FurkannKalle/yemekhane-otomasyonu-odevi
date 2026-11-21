@@ -1,0 +1,57 @@
+@model List<DegerlendirmeSatiri>
+@{
+    ViewData["Title"] = "Değerlendirme";
+}
+<h1>Değerlendirme</h1>
+<p class="soluk">Kullandığınız menülere 1–5 arası puan verip yorum yazabilirsiniz. Her menü bir kez değerlendirilir.</p>
+
+@if (Model.Count == 0)
+{
+    <p class="bildirim">Henüz kullandığınız bir menü yok.</p>
+}
+
+@foreach (var d in Model)
+{
+    <article class="kart liste-kart">
+        <div class="satir">
+            <h2>@d.Tarih.ToString("d MMMM dddd") · @d.Ogun</h2>
+            @if (d.Puan is null)
+            {
+                <span class="rozet">Bekliyor</span>
+            }
+            else
+            {
+                <span class="rozet rozet-aktif">Değerlendirildi</span>
+            }
+        </div>
+        <p class="soluk">@d.Yemekhane</p>
+
+        @if (d.Puan is int puan)
+        {
+            <p>
+                <span class="yildiz" aria-label="@puan / 5">@(new string('★', puan) + new string('☆', 5 - puan))</span>
+                <strong>@puan/5</strong>
+            </p>
+            @if (d.Yorum is not null)
+            {
+                <p class="soluk">“@d.Yorum”</p>
+            }
+        }
+        else
+        {
+            <form asp-action="Ekle" method="post">
+                <input type="hidden" name="menuId" value="@d.MenuId" />
+                <fieldset class="puan-sec">
+                    <legend>Puanınız</legend>
+                    @for (var p = 1; p <= 5; p++)
+                    {
+                        <label><input type="radio" name="puan" value="@p" required /><span>@p</span></label>
+                    }
+                </fieldset>
+                <label for="yorum-@d.MenuId">Yorum (isteğe bağlı)</label>
+                <textarea id="yorum-@d.MenuId" name="yorum" rows="3"></textarea>
+                <button type="submit" class="dugme">Gönder</button>
+            </form>
+        }
+    </article>
+}

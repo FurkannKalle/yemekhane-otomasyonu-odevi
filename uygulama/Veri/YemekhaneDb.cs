@@ -16,6 +16,7 @@ public abstract class YemekhaneDb : DbContext
     public DbSet<Menu> Menuler => Set<Menu>();
     public DbSet<Rezervasyon> Rezervasyonlar => Set<Rezervasyon>();
     public DbSet<BakiyeHareketi> BakiyeHareketleri => Set<BakiyeHareketi>();
+    public DbSet<Degerlendirme> Degerlendirmeler => Set<Degerlendirme>();
 
     protected override void OnModelCreating(ModelBuilder model)
     {

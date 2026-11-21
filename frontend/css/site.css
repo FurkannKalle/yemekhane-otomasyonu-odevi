@@ -101,3 +101,16 @@ main.kapsayici { padding-block: 1.25rem 3rem; }
   .tablo td:last-child { border-bottom: 0; }
   .tablo td::before { content: attr(data-etiket); font-weight: 600; color: var(--metin-soluk); text-align: left; }
 }
+
+.puan-sec { border: 0; padding: 0; margin: 0.5rem 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.puan-sec legend { font-weight: 600; margin-bottom: 0.25rem; width: 100%; }
+.puan-sec label { margin: 0; }
+.puan-sec input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.puan-sec span {
+  display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; cursor: pointer;
+  border: 1px solid var(--cizgi); border-radius: var(--kose); font-weight: 700; background: var(--yuzey);
+}
+.puan-sec input:checked + span { background: var(--vurgu); border-color: var(--vurgu); }
+.puan-sec input:focus-visible + span { outline: 3px solid var(--ana); outline-offset: 2px; }
+.yildiz { color: var(--vurgu); font-size: 1.15rem; letter-spacing: 0.1em; }
+.liste-kart textarea { width: 100%; margin-bottom: 0.5rem; }
