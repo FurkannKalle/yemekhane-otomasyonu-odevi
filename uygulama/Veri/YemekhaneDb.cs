@@ -1,0 +1,23 @@
+using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
+using Yemekhane.Models;
+
+namespace Yemekhane.Veri;
+
+public abstract class YemekhaneDb : DbContext
+{
+    protected YemekhaneDb(DbContextOptions options) : base(options) { }
+
+    public DbSet<Kullanici> Kullanicilar => Set<Kullanici>();
+
+    protected override void OnModelCreating(ModelBuilder model)
+    {
+        foreach (var varlik in model.Model.GetEntityTypes())
+            foreach (var alan in varlik.GetProperties())
+                alan.SetColumnName(Regex.Replace(alan.Name, "(?<!^)([A-Z])", "_$1").ToLowerInvariant());
+    }
+}
+
+public class YazmaDb(DbContextOptions<YazmaDb> options) : YemekhaneDb(options);
+
+public class OkumaDb(DbContextOptions<OkumaDb> options) : YemekhaneDb(options);
