@@ -1,9 +1,9 @@
-﻿@{
+﻿@model Yemekhane.Servisler.OturumBilgisi
+@{
     ViewData["Title"] = "Ana sayfa";
 }
-<h1>Yemekhane Otomasyonu</h1>
+<h1>Hoş geldin, @Model.Ad</h1>
 <div class="kart">
-    <p>Uygulama çalışıyor.</p>
+    <p>Giriş yaptın. Rolün: <strong>@Model.Rol</strong></p>
     <p>Bugün: <strong>@DateTime.Now.ToString("d MMMM yyyy dddd")</strong></p>
-    <p>Örnek fiyat: <strong>@(40m.ToString("C"))</strong></p>
 </div>

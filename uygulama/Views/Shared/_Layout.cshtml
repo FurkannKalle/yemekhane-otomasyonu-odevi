@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var oturum = Context.Items["oturum"] as Yemekhane.Servisler.OturumBilgisi;
+}
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
@@ -11,15 +14,28 @@
     <header class="ust">
         <div class="kapsayici ust-satir">
             <a class="marka" href="/">Yemekhane</a>
+            @if (oturum is not null)
+            {
+                <form asp-controller="Hesap" asp-action="Cikis" method="post" class="kim">
+                    <span>@oturum.Ad</span>
+                    <button type="submit" class="dugme dugme-cikis">Çıkış</button>
+                </form>
+            }
         </div>
-        <nav class="kapsayici ana-menu" aria-label="Ana menü">
-            <a href="/">Günün menüsü</a>
-            <a href="/Menu/Haftalik">Haftalık menü</a>
-            <a href="/Rezervasyon">Rezervasyonlarım</a>
-            <a href="/Bakiye">Bakiye</a>
-            <a href="/Degerlendirme">Değerlendirme</a>
-            <a href="/Yonetim">Yönetim</a>
-        </nav>
+        @if (oturum is not null)
+        {
+            <nav class="kapsayici ana-menu" aria-label="Ana menü">
+                <a href="/">Günün menüsü</a>
+                <a href="/Menu/Haftalik">Haftalık menü</a>
+                <a href="/Rezervasyon">Rezervasyonlarım</a>
+                <a href="/Bakiye">Bakiye</a>
+                <a href="/Degerlendirme">Değerlendirme</a>
+                @if (oturum.Rol == "yonetici")
+                {
+                    <a href="/Yonetim">Yönetim</a>
+                }
+            </nav>
+        }
     </header>
 
     <main class="kapsayici">

@@ -1,0 +1,25 @@
+@model GirisModel
+@{
+    ViewData["Title"] = "Giriş";
+}
+<section class="kart giris-kart">
+    <h1>Giriş</h1>
+    <p class="soluk">Kampüs e-postanız ve şifrenizle giriş yapın.</p>
+
+    @if (ViewBag.Hata != null)
+    {
+        <p class="bildirim bildirim-hata">@ViewBag.Hata</p>
+    }
+
+    <form asp-action="Giris" method="post">
+        <label asp-for="Eposta">E-posta</label>
+        <input asp-for="Eposta" type="email" autocomplete="username" />
+        <span asp-validation-for="Eposta" class="alan-hata"></span>
+
+        <label asp-for="Sifre">Şifre</label>
+        <input asp-for="Sifre" type="password" autocomplete="current-password" />
+        <span asp-validation-for="Sifre" class="alan-hata"></span>
+
+        <button type="submit" class="dugme">Giriş yap</button>
+    </form>
+</section>

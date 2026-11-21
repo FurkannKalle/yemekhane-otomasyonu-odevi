@@ -20,3 +20,11 @@ main.kapsayici { padding-block: 1.25rem 3rem; }
   background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: var(--kose);
   padding: 1rem; margin-bottom: 1rem;
 }
+.kim { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: var(--boyut-kucuk); }
+.dugme-cikis { background: transparent; border: 1px solid rgb(255 255 255 / 0.6); }
+.dugme-cikis:hover { background: var(--ana-koyu); }
+
+.giris-kart { max-width: 380px; margin: 2rem auto; }
+.giris-kart form { display: grid; gap: 0.5rem; }
+.alan-hata { color: var(--hata); font-size: var(--boyut-kucuk); }
+.soluk { color: var(--metin-soluk); }
