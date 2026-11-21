@@ -28,3 +28,24 @@ main.kapsayici { padding-block: 1.25rem 3rem; }
 .giris-kart form { display: grid; gap: 0.5rem; }
 .alan-hata { color: var(--hata); font-size: var(--boyut-kucuk); }
 .soluk { color: var(--metin-soluk); }
+
+.filtre { display: grid; gap: 0.75rem; margin-bottom: 1rem; }
+@media (min-width: 640px) {
+  .filtre { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: end; }
+}
+
+.menu-baslik { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.fiyat { font-weight: 700; font-size: var(--boyut-buyuk); color: var(--ana-koyu); white-space: nowrap; }
+.yemekler { list-style: none; margin: 1rem 0; padding: 0; }
+.yemek { padding: 0.75rem 0; border-top: 1px solid var(--cizgi); }
+.yemek strong { display: block; margin: 0.1rem 0 0.3rem; }
+.yemek-satir { display: flex; justify-content: space-between; font-size: var(--boyut-kucuk); }
+.yemek-kategori { color: var(--metin-soluk); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.03em; }
+.etiketler { display: flex; flex-wrap: wrap; gap: 0.35rem 0.6rem; align-items: center; font-size: var(--boyut-kucuk); }
+.rozet { display: inline-block; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+.rozet-veg { background: var(--basari-zemin); color: var(--basari); }
+.menu-alt {
+  display: grid; gap: 0.25rem; padding: 0.75rem; background: var(--zemin);
+  border-radius: var(--kose); font-size: var(--boyut-kucuk);
+}
+@media (min-width: 640px) { .menu-alt { grid-template-columns: repeat(3, 1fr); } }

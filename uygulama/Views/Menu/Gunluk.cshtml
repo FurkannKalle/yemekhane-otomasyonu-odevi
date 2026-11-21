@@ -1,0 +1,87 @@
+@model GunlukMenuSayfasi
+@{
+    ViewData["Title"] = "Günün menüsü";
+}
+<h1>Günün menüsü</h1>
+
+<form method="get" asp-action="Gunluk" class="filtre">
+    <div>
+        <label for="yemekhaneId">Yemekhane</label>
+        <select id="yemekhaneId" name="yemekhaneId">
+            @foreach (var y in Model.Yemekhaneler)
+            {
+                <option value="@y.Id" selected="@(y.Id == Model.YemekhaneId)">@y.Ad</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label for="tarih">Tarih</label>
+        <input id="tarih" name="tarih" type="date" value="@Model.Tarih.ToString("yyyy-MM-dd")" />
+    </div>
+    <div>
+        <label for="ogunId">Öğün</label>
+        <select id="ogunId" name="ogunId">
+            @foreach (var o in Model.Ogunler)
+            {
+                <option value="@o.Id" selected="@(o.Id == Model.OgunId)">@o.Ad</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="dugme">Göster</button>
+</form>
+
+@if (Model.Menu is null)
+{
+    <p class="bildirim">Bu yemekhanede seçilen gün ve öğün için menü yok.</p>
+}
+else
+{
+    var m = Model.Menu;
+    <article class="kart">
+        <header class="menu-baslik">
+            <div>
+                <h2>@m.Ogun · @m.Tarih.ToString("d MMMM dddd")</h2>
+                <p class="soluk">@m.Yemekhane</p>
+            </div>
+            <span class="fiyat">@m.Fiyat.ToString("C")</span>
+        </header>
+
+        <ul class="yemekler">
+            @foreach (var y in m.Yemekler)
+            {
+                <li class="yemek">
+                    <div class="yemek-satir">
+                        <span class="yemek-kategori">@y.Kategori</span>
+                        <span class="soluk">@y.Kalori kcal</span>
+                    </div>
+                    <strong>@y.Yemek</strong>
+                    <div class="etiketler">
+                        @if (y.Vejetaryen)
+                        {
+                            <span class="rozet rozet-veg">Vejetaryen</span>
+                        }
+                        @if (y.Alerjenler is null)
+                        {
+                            <span class="soluk">Alerjen içermez</span>
+                        }
+                        else
+                        {
+                            <span>Alerjen: @y.Alerjenler</span>
+                        }
+                    </div>
+                </li>
+            }
+        </ul>
+
+        <div class="menu-alt">
+            <span>Toplam kalori: <strong>@m.ToplamKalori kcal</strong></span>
+            <span>Boş yer: <strong>@m.BosYer</strong> / @m.Kapasite</span>
+            <span>Rezervasyon son saati: <strong>@m.RezervasyonSon.ToString("HH:mm")</strong></span>
+        </div>
+
+        @if (!m.RezervasyonAcik)
+        {
+            <p class="soluk">Bu öğün için rezervasyon süresi doldu.</p>
+        }
+    </article>
+}

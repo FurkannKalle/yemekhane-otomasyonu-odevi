@@ -29,7 +29,7 @@ public class HesapController(KullaniciDeposu kullanicilar, OturumServisi oturuml
 
         var token = await oturumlar.AcAsync(new OturumBilgisi(kullanici.Id, kullanici.Ad, kullanici.Rol));
         Response.Cookies.Append("oturum", token, new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Lax });
-        return RedirectToAction("Index", "Home");   // PRG: POST'tan sonra yönlendir
+        return RedirectToAction("Gunluk", "Menu");  
     }
 
     [HttpPost, ValidateAntiForgeryToken]

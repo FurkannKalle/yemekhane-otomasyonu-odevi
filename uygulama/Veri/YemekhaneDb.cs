@@ -9,6 +9,10 @@ public abstract class YemekhaneDb : DbContext
     protected YemekhaneDb(DbContextOptions options) : base(options) { }
 
     public DbSet<Kullanici> Kullanicilar => Set<Kullanici>();
+    public DbSet<YemekhaneKaydi> Yemekhaneler => Set<YemekhaneKaydi>();
+    public DbSet<Ogun> Ogunler => Set<Ogun>();
+    public DbSet<MenuDetay> MenuDetaylari => Set<MenuDetay>();
+    public DbSet<MenuDoluluk> MenuDoluluklari => Set<MenuDoluluk>();
 
     protected override void OnModelCreating(ModelBuilder model)
     {

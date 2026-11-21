@@ -21,6 +21,8 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(
 
 builder.Services.AddSingleton<OturumServisi>();
 builder.Services.AddScoped<KullaniciDeposu>();
+builder.Services.AddScoped<MenuDeposu>();
+builder.Services.AddScoped<MenuServisi>();
 
 var app = builder.Build();
 
@@ -45,7 +47,7 @@ app.Use(async (context, next) =>
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Menu}/{action=Gunluk}/{id?}");
 
 app.MapGet("/saglik", () => "ok");
 
