@@ -1,0 +1,22 @@
+.ust { background: var(--ana); color: #fff; }
+.ust-satir { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding-block: 0.6rem; }
+.marka { color: #fff; font-weight: 700; font-size: var(--boyut-buyuk); text-decoration: none; }
+.marka:hover { color: #fff; }
+
+
+.ana-menu { display: flex; gap: 0.25rem; overflow-x: auto; padding-bottom: 0.4rem; }
+.ana-menu a {
+  flex: none; display: flex; align-items: center; min-height: 44px; padding: 0 0.8rem;
+  border-radius: var(--kose); color: #fff; text-decoration: none; font-size: var(--boyut-kucuk);
+}
+.ana-menu a:hover { background: var(--ana-koyu); color: #fff; }
+
+
+main.kapsayici { padding-block: 1.25rem 3rem; }
+.alt { padding-block: 1rem 2rem; color: var(--metin-soluk); font-size: var(--boyut-kucuk); }
+
+
+.kart {
+  background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: var(--kose);
+  padding: 1rem; margin-bottom: 1rem;
+}
