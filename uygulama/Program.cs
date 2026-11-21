@@ -28,6 +28,8 @@ builder.Services.AddScoped<VeriKaynagi>();
 builder.Services.AddScoped<BakiyeDeposu>();
 builder.Services.AddScoped<DegerlendirmeDeposu>();
 builder.Services.AddScoped<DegerlendirmeServisi>();
+builder.Services.AddScoped<YonetimDeposu>();
+builder.Services.AddScoped<YonetimServisi>();
 
 var app = builder.Build();
 

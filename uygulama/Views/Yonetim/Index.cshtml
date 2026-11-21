@@ -1,0 +1,142 @@
+@model YonetimSayfasi
+@{
+    ViewData["Title"] = "Yönetici paneli";
+    var f = Model.Form;
+    var duzenleme = f.Id is not null;
+    var onceki = Model.Baslangic.AddDays(-7).ToString("yyyy-MM-dd");
+    var sonraki = Model.Baslangic.AddDays(7).ToString("yyyy-MM-dd");
+}
+<h1>Yönetici paneli</h1>
+
+<details class="kart" open="@duzenleme">
+    <summary><h2>@(duzenleme ? $"Menüyü düzenle (#{f.Id})" : "Yeni menü ekle")</h2></summary>
+
+    <form asp-action="Kaydet" method="post">
+        <input type="hidden" name="Id" value="@f.Id" />
+        <div class="alanlar">
+            <div>
+                <label for="YemekhaneId">Yemekhane</label>
+                <select id="YemekhaneId" name="YemekhaneId">
+                    @foreach (var y in Model.Yemekhaneler)
+                    {
+                        <option value="@y.Id" selected="@(y.Id == f.YemekhaneId)">@y.Ad</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label for="Tarih">Tarih</label>
+                <input id="Tarih" name="Tarih" type="date" value="@f.Tarih" required />
+            </div>
+            <div>
+                <label for="OgunId">Öğün</label>
+                <select id="OgunId" name="OgunId">
+                    @foreach (var o in Model.Ogunler)
+                    {
+                        <option value="@o.Id" selected="@(o.Id == f.OgunId)">@o.Ad</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label for="OgrenciFiyati">Öğrenci fiyatı (TL)</label>
+                <input id="OgrenciFiyati" name="OgrenciFiyati" type="text" inputmode="decimal" value="@f.OgrenciFiyati" required />
+            </div>
+            <div>
+                <label for="PersonelFiyati">Personel fiyatı (TL)</label>
+                <input id="PersonelFiyati" name="PersonelFiyati" type="text" inputmode="decimal" value="@f.PersonelFiyati" required />
+            </div>
+        </div>
+
+        <fieldset class="yemek-sec">
+            <legend>Yemekler</legend>
+            @foreach (var grup in Model.Yemekler.GroupBy(y => y.Kategori))
+            {
+                <div class="yemek-grup">
+                    <h3>@grup.Key</h3>
+                    <div class="secenekler">
+                        @foreach (var y in grup)
+                        {
+                            <label class="secenek">
+                                <input type="checkbox" name="YemekIdler" value="@y.Id" checked="@f.YemekIdler.Contains(y.Id)" />
+                                @y.Ad <span class="soluk">@y.Kalori kcal@(y.Vejetaryen ? " · V" : "")</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+            }
+        </fieldset>
+
+        <div class="dugmeler">
+            <button type="submit" class="dugme">Kaydet</button>
+            @if (duzenleme)
+            {
+                <a asp-action="Index" asp-route-baslangic="@Model.Baslangic.ToString("yyyy-MM-dd")" class="dugme dugme-ikincil">Vazgeç</a>
+            }
+        </div>
+    </form>
+</details>
+
+<h2>Menüler: doluluk ve ortalama puan</h2>
+
+<form method="get" asp-action="Index" class="filtre">
+    <div>
+        <label for="baslangic">Başlangıç günü</label>
+        <input id="baslangic" name="baslangic" type="date" value="@Model.Baslangic.ToString("yyyy-MM-dd")" />
+    </div>
+    <div>
+        <label for="yemekhaneId">Yemekhane</label>
+        <select id="yemekhaneId" name="yemekhaneId">
+            <option value="">Tümü</option>
+            @foreach (var y in Model.Yemekhaneler)
+            {
+                <option value="@y.Id" selected="@(y.Id == Model.YemekhaneId)">@y.Ad</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="dugme">Göster</button>
+</form>
+
+<div class="hafta-gezinme">
+    <a class="dugme dugme-ikincil" asp-action="Index" asp-route-baslangic="@onceki" asp-route-yemekhaneId="@Model.YemekhaneId">‹ Önceki hafta</a>
+    <a class="dugme dugme-ikincil" asp-action="Index" asp-route-baslangic="@sonraki" asp-route-yemekhaneId="@Model.YemekhaneId">Sonraki hafta ›</a>
+</div>
+
+<table class="tablo">
+    <thead>
+        <tr><th>Tarih</th><th>Yemekhane</th><th>Öğün</th><th>Fiyat (öğr. / pers.)</th><th>Doluluk</th><th>Ortalama puan</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var m in Model.Rapor)
+        {
+            <tr>
+                <td data-etiket="Tarih">@m.Tarih.ToString("d MMMM ddd")</td>
+                <td data-etiket="Yemekhane">@m.Yemekhane</td>
+                <td data-etiket="Öğün">@m.Ogun</td>
+                <td data-etiket="Fiyat">@m.OgrenciFiyati.ToString("C") / @m.PersonelFiyati.ToString("C")</td>
+                <td data-etiket="Doluluk">
+                    <div class="doluluk">
+                        <span>@m.Rezerve / @m.Kapasite · %@m.DolulukYuzde</span>
+                        <meter min="0" max="@m.Kapasite" value="@m.Rezerve"></meter>
+                    </div>
+                </td>
+                <td data-etiket="Ortalama puan">
+                    @if (m.OrtalamaPuan is decimal puan)
+                    {
+                        <span>@puan.ToString("0.00") <span class="soluk">(@m.OySayisi oy)</span></span>
+                    }
+                    else
+                    {
+                        <span class="soluk">Oy yok</span>
+                    }
+                </td>
+                <td data-etiket="">
+                    <a asp-action="Index" asp-route-duzenle="@m.MenuId" asp-route-baslangic="@Model.Baslangic.ToString("yyyy-MM-dd")"
+                       class="dugme dugme-ikincil">Düzenle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (Model.Rapor.Count == 0)
+{
+    <p class="bildirim">Bu tarihlerde menü yok.</p>
+}

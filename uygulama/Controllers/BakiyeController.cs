@@ -1,8 +1,8 @@
-using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using Yemekhane.Models;
 using Yemekhane.Veri;
+using Yemekhane.Servisler;
 
 namespace Yemekhane.Controllers;
 
@@ -18,8 +18,7 @@ public class BakiyeController(KullaniciDeposu kullanicilar, BakiyeDeposu bakiyel
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Yukle(string? tutar)
     {
-        var metin = (tutar ?? "").Trim().Replace(',', '.');
-        var miktar = decimal.TryParse(metin, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var m) ? m : 0;
+        var miktar = TutarCozucu.Coz(tutar) ?? 0;
         try
         {
             var sonuc = await bakiyeler.YukleAsync(Oturum.Id, miktar);

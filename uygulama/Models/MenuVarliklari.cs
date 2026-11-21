@@ -40,6 +40,7 @@ public class MenuDetay
     public string? AlerjenIdler { get; set; }    
 }
 
+
 [Keyless, Table("v_menu_doluluk")]
 public class MenuDoluluk
 {
@@ -54,7 +55,8 @@ public class MenuDoluluk
     public int BosYer { get; set; }
     public decimal DolulukYuzde { get; set; }
     public DateTime RezervasyonSon { get; set; }
-}   
+}
+
 [Table("menuler")]
 public class Menu
 {
@@ -64,6 +66,7 @@ public class Menu
     public int OgunId { get; set; }
     public decimal OgrenciFiyati { get; set; }
     public decimal PersonelFiyati { get; set; }
+    public List<MenuYemek> Yemekler { get; set; } = [];   
 }
 
 [Table("rezervasyonlar")]
@@ -86,9 +89,44 @@ public class RezervasyonSonucu
     [Column("bakiye")] public decimal Bakiye { get; set; }
 }
 
+
 public class IptalSonucu
 {
     [Column("rezervasyon_id")] public int RezervasyonId { get; set; }
     [Column("iade")] public decimal Iade { get; set; }
     [Column("bakiye")] public decimal Bakiye { get; set; }
+}
+
+[Table("menu_yemekleri"), PrimaryKey(nameof(MenuId), nameof(YemekId))]
+public class MenuYemek
+{
+    public int MenuId { get; set; }
+    public int YemekId { get; set; }
+}
+
+[Table("yemekler")]
+public class Yemek
+{
+    public int Id { get; set; }
+    public int KategoriId { get; set; }
+    public string Ad { get; set; } = "";
+    public int Kalori { get; set; }
+    public bool Vejetaryen { get; set; }
+}
+
+[Table("yemek_kategorileri")]
+public class YemekKategorisi
+{
+    public int Id { get; set; }
+    public string Ad { get; set; } = "";
+    public int Sira { get; set; }
+}
+
+
+[Keyless, Table("v_menu_puan")]
+public class MenuPuan
+{
+    public int MenuId { get; set; }
+    public int OySayisi { get; set; }
+    public decimal? OrtalamaPuan { get; set; }
 }
