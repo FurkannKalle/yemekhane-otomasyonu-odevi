@@ -32,7 +32,7 @@ public class MenuServisi(MenuDeposu menuler)
 
     public async Task<List<HaftalikMenu>> HaftalikAsync(OturumBilgisi oturum, int yemekhaneId, DateOnly baslangic)
     {
-        var liste = await menuler.HaftalikAsync(oturum.Id, yemekhaneId, baslangic);
+        var liste = await menuler.HaftalikAsync(oturum, yemekhaneId, baslangic);
         foreach (var m in liste)
         {
             m.Fiyat = FiyatSec(oturum.Rol, m.OgrenciFiyati, m.PersonelFiyati);

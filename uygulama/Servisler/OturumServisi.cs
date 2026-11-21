@@ -4,7 +4,7 @@ using StackExchange.Redis;
 
 namespace Yemekhane.Servisler;
 
-public record OturumBilgisi(int Id, string Ad, string Rol);
+public record OturumBilgisi(int Id, string Ad, string Rol, DateTime? SonYazma = null);
 
 public class OturumServisi(IConnectionMultiplexer redis)
 {
@@ -19,10 +19,18 @@ public class OturumServisi(IConnectionMultiplexer redis)
         return token;
     }
 
-    public async Task<OturumBilgisi?> DogrulaAsync(string token)
+    public async Task<OturumBilgisi?> DogrulaAsync(string token, bool yazmaIstegi)
     {
         var deger = await Db.StringGetSetExpiryAsync(Anahtar(token), Sure);
-        return deger.IsNull ? null : JsonSerializer.Deserialize<OturumBilgisi>(deger.ToString());
+        if (deger.IsNull) return null;
+
+        var oturum = JsonSerializer.Deserialize<OturumBilgisi>(deger.ToString())!;
+        if (yazmaIstegi)
+        {
+            oturum = oturum with { SonYazma = DateTime.UtcNow };
+            await Db.StringSetAsync(Anahtar(token), JsonSerializer.Serialize(oturum), Sure);
+        }
+        return oturum;
     }
 
     public Task KapatAsync(string token) => Db.KeyDeleteAsync(Anahtar(token));

@@ -24,6 +24,7 @@ builder.Services.AddScoped<KullaniciDeposu>();
 builder.Services.AddScoped<MenuDeposu>();
 builder.Services.AddScoped<MenuServisi>();
 builder.Services.AddScoped<RezervasyonDeposu>();
+builder.Services.AddScoped<VeriKaynagi>();
 
 var app = builder.Build();
 
@@ -40,15 +41,20 @@ app.Use(async (context, next) =>
     if (context.Request.Cookies.TryGetValue("oturum", out var token))
     {
         var oturumlar = context.RequestServices.GetRequiredService<OturumServisi>();
-        var oturum = await oturumlar.DogrulaAsync(token);
+        var oturum = await oturumlar.DogrulaAsync(token, HttpMethods.IsPost(context.Request.Method));
         if (oturum is not null) context.Items["oturum"] = oturum;
     }
     await next();
 });
 
 app.MapControllerRoute(
+    name: "anasayfa",
+    pattern: "",
+    defaults: new { controller = "Menu", action = "Gunluk" });
+
+app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Menu}/{action=Gunluk}/{id?}");
+    pattern: "{controller}/{action=Index}/{id?}");
 
 app.MapGet("/saglik", () => "ok");
 

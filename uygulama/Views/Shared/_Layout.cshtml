@@ -17,7 +17,8 @@
             @if (oturum is not null)
             {
                 <form asp-controller="Hesap" asp-action="Cikis" method="post" class="kim">
-                    <span>@oturum.Ad</span>
+                        <span>@oturum.Ad</span>
+                    <span class="kim-bakiye">@await Component.InvokeAsync("Bakiye", new { oturum })</span>
                     <button type="submit" class="dugme dugme-cikis">Çıkış</button>
                 </form>
             }

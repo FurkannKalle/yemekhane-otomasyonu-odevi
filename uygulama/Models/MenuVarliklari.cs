@@ -46,6 +46,7 @@ public class MenuDoluluk
     public int MenuId { get; set; }
     public DateOnly Tarih { get; set; }
     public int YemekhaneId { get; set; }
+    public string Yemekhane { get; set; } = "";
     public int OgunId { get; set; }
     public string Ogun { get; set; } = "";
     public int Kapasite { get; set; }
@@ -82,5 +83,12 @@ public class RezervasyonSonucu
 {
     [Column("rezervasyon_id")] public int RezervasyonId { get; set; }
     [Column("ucret")] public decimal Ucret { get; set; }
+    [Column("bakiye")] public decimal Bakiye { get; set; }
+}
+
+public class IptalSonucu
+{
+    [Column("rezervasyon_id")] public int RezervasyonId { get; set; }
+    [Column("iade")] public decimal Iade { get; set; }
     [Column("bakiye")] public decimal Bakiye { get; set; }
 }

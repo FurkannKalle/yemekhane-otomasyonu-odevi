@@ -66,3 +66,18 @@ main.kapsayici { padding-block: 1.25rem 3rem; }
 .dugme-ikincil { background: var(--yuzey); color: var(--ana); border: 1px solid var(--ana); text-decoration: none; }
 .dugme-ikincil:hover { background: var(--zemin); color: var(--ana-koyu); }
 .dugme:disabled { background: var(--cizgi); color: var(--metin-soluk); cursor: not-allowed; }
+
+.kim-bakiye { background: var(--vurgu); color: var(--metin); font-weight: 700; padding: 0.15rem 0.55rem; border-radius: 999px; white-space: nowrap; }
+
+.sekmeler { display: flex; gap: 0.25rem; overflow-x: auto; margin-bottom: 1rem; border-bottom: 2px solid var(--cizgi); }
+.sekmeler a { flex: none; padding: 0.6rem 0.9rem; text-decoration: none; color: var(--metin-soluk); min-height: 44px; }
+.sekmeler a[aria-current="page"] { color: var(--ana); font-weight: 700; box-shadow: inset 0 -3px 0 var(--ana); }
+
+.liste-kart h2 { font-size: 1.05rem; margin: 0; }
+.liste-kart p { margin: 0.35rem 0 0; }
+.satir { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.liste-kart form { margin-top: 0.5rem; }
+
+.rozet-aktif { background: var(--basari-zemin); color: var(--basari); }
+.rozet-kullanildi { background: #E3ECF7; color: #24508A; }
+.rozet-iptal { background: var(--zemin); color: var(--metin-soluk); }
