@@ -3,14 +3,14 @@ using Yemekhane.Veri;
 
 namespace Yemekhane.Servisler;
 
-public class MenuServisi(MenuDeposu menuler)
+public class MenuServisi(MenuDeposu menuler, MenuOnbellegi onbellek)
 {
     public static decimal FiyatSec(string rol, decimal ogrenciFiyati, decimal personelFiyati) =>
         rol == "ogrenci" ? ogrenciFiyati : personelFiyati;
 
     public async Task<GunlukMenu?> GunlukAsync(OturumBilgisi oturum, int yemekhaneId, DateOnly tarih, int ogunId)
     {
-        var yemekler = await menuler.DetayAsync(yemekhaneId, tarih, ogunId);
+        var yemekler = await onbellek.DetayAsync(yemekhaneId, tarih, ogunId);
         if (yemekler.Count == 0) return null;   // bu seçim için menü yok
 
         var ilk = yemekler[0];   // menü bilgileri her satırda aynı

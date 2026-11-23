@@ -4,7 +4,7 @@ using Yemekhane.Servisler;
 
 namespace Yemekhane.Veri;
 
-public class MenuDeposu(OkumaDb okuma, VeriKaynagi kaynak)
+public class MenuDeposu(OkumaDb okuma, YazmaDb yazma, VeriKaynagi kaynak)
 {
     public Task<List<YemekhaneKaydi>> YemekhanelerAsync() =>
         okuma.Yemekhaneler.AsNoTracking().OrderBy(y => y.Id).ToListAsync();
@@ -12,8 +12,9 @@ public class MenuDeposu(OkumaDb okuma, VeriKaynagi kaynak)
     public Task<List<Ogun>> OgunlerAsync() =>
         okuma.Ogunler.AsNoTracking().OrderBy(o => o.Sira).ToListAsync();
 
-    public Task<List<MenuDetay>> DetayAsync(int yemekhaneId, DateOnly tarih, int ogunId) =>
-        okuma.MenuDetaylari
+    // Normalde replikadan; yönetici değişikliğinden sonra önbellek yenilenirken kaynaktan.
+    public Task<List<MenuDetay>> DetayAsync(int yemekhaneId, DateOnly tarih, int ogunId, bool kaynaktan = false) =>
+        (kaynaktan ? (YemekhaneDb)yazma : okuma).MenuDetaylari
             .Where(d => d.YemekhaneId == yemekhaneId && d.Tarih == tarih && d.OgunId == ogunId)
             .OrderBy(d => d.KategoriSira).ThenBy(d => d.Yemek)
             .ToListAsync();

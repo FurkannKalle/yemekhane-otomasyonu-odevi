@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -15,8 +16,10 @@ var mysql = new MySqlServerVersion(new Version(8, 4, 0));
 builder.Services.AddDbContext<YazmaDb>(o => o.UseMySql(Baglanti(ayar["DB_YAZMA_HOST"]), mysql));
 builder.Services.AddDbContext<OkumaDb>(o => o.UseMySql(Baglanti(ayar["DB_OKUMA_HOST"]), mysql));
 
-builder.Services.AddSingleton<IConnectionMultiplexer>(
-    ConnectionMultiplexer.Connect($"{ayar["REDIS_HOST"]}:{ayar["REDIS_PORT"]},abortConnect=false"));
+var redis = ConnectionMultiplexer.Connect($"{ayar["REDIS_HOST"]}:{ayar["REDIS_PORT"]},abortConnect=false");
+builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
+
+builder.Services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "veri-koruma:anahtarlar");
 
 
 builder.Services.AddSingleton<OturumServisi>();
@@ -30,6 +33,7 @@ builder.Services.AddScoped<DegerlendirmeDeposu>();
 builder.Services.AddScoped<DegerlendirmeServisi>();
 builder.Services.AddScoped<YonetimDeposu>();
 builder.Services.AddScoped<YonetimServisi>();
+builder.Services.AddScoped<MenuOnbellegi>();
 
 var app = builder.Build();
 

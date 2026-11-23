@@ -6,7 +6,7 @@ using Yemekhane.Veri;
 
 namespace Yemekhane.Servisler;
 
-public class YonetimServisi(YonetimDeposu depo)
+public class YonetimServisi(YonetimDeposu depo, MenuOnbellegi onbellek)
 {
     public async Task<MenuFormu?> FormAsync(int id)
     {
@@ -47,29 +47,35 @@ public class YonetimServisi(YonetimDeposu depo)
                     PersonelFiyati = personel.Value,
                     Yemekler = f.YemekIdler.Distinct().Select(id => new MenuYemek { YemekId = id }).ToList(),
                 });
-                return null;
             }
+            else
+            {
+                var menu = await depo.MenuGetirAsync(f.Id.Value);
+                if (menu is null) return "Menü bulunamadı.";
 
-            var menu = await depo.MenuGetirAsync(f.Id.Value);
-            if (menu is null) return "Menü bulunamadı.";
+                var kimlikDegisti = menu.YemekhaneId != f.YemekhaneId || menu.Tarih != tarih || menu.OgunId != f.OgunId;
+                if (kimlikDegisti && await depo.RezervasyonSayisiAsync(menu.Id) > 0)
+                    return "Rezervasyonu olan menünün yemekhanesi, tarihi ya da öğünü değiştirilemez.";
 
-            var kimlikDegisti = menu.YemekhaneId != f.YemekhaneId || menu.Tarih != tarih || menu.OgunId != f.OgunId;
-            if (kimlikDegisti && await depo.RezervasyonSayisiAsync(menu.Id) > 0)
-                return "Rezervasyonu olan menünün yemekhanesi, tarihi ya da öğünü değiştirilemez.";
+                var eski = (menu.YemekhaneId, menu.Tarih, menu.OgunId);
 
-            menu.YemekhaneId = f.YemekhaneId;
-            menu.Tarih = tarih;
-            menu.OgunId = f.OgunId;
-            menu.OgrenciFiyati = ogrenci.Value;
-            menu.PersonelFiyati = personel.Value;
+                menu.YemekhaneId = f.YemekhaneId;
+                menu.Tarih = tarih;
+                menu.OgunId = f.OgunId;
+                menu.OgrenciFiyati = ogrenci.Value;
+                menu.PersonelFiyati = personel.Value;
 
-            var secilen = f.YemekIdler.ToHashSet();
-            menu.Yemekler.RemoveAll(y => !secilen.Contains(y.YemekId));
-            foreach (var id in secilen.Except(menu.Yemekler.Select(y => y.YemekId)).ToList())
-                menu.Yemekler.Add(new MenuYemek { YemekId = id });
+                var secilen = f.YemekIdler.ToHashSet();
+                menu.Yemekler.RemoveAll(y => !secilen.Contains(y.YemekId));
+                foreach (var id in secilen.Except(menu.Yemekler.Select(y => y.YemekId)).ToList())
+                    menu.Yemekler.Add(new MenuYemek { YemekId = id });
 
-            await depo.KaydetAsync();
-            return null;
+                await depo.KaydetAsync();
+
+                // Menü başka bir yemekhane/tarih/öğüne taşındıysa eski anahtar da temizlenir.
+                if (kimlikDegisti)
+                    await onbellek.YenileAsync(eski.YemekhaneId, eski.Tarih, eski.OgunId);
+            }
         }
         catch (DbUpdateException hata) when (hata.InnerException is MySqlException { Number: 1062 })
         {
@@ -79,5 +85,9 @@ public class YonetimServisi(YonetimDeposu depo)
         {
             return "Seçilen yemekhane, öğün ya da yemeklerden biri bulunamadı.";
         }
+
+        // Kayıt başarılı: menünün önbellek kaydı silinir ve kaynaktan yeniden doldurulur.
+        await onbellek.YenileAsync(f.YemekhaneId, tarih, f.OgunId);
+        return null;
     }
 }
