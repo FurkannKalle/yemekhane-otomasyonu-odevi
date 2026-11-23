@@ -17,7 +17,7 @@
             @if (oturum is not null)
             {
                 <form asp-controller="Hesap" asp-action="Cikis" method="post" class="kim">
-                        <span>@oturum.Ad</span>
+                    <span>@oturum.Ad</span>
                     <span class="kim-bakiye">@await Component.InvokeAsync("Bakiye", new { oturum })</span>
                     <button type="submit" class="dugme dugme-cikis">Çıkış</button>
                 </form>
@@ -31,6 +31,7 @@
                 <a href="/Rezervasyon">Rezervasyonlarım</a>
                 <a href="/Bakiye">Bakiye</a>
                 <a href="/Degerlendirme">Değerlendirme</a>
+                <a href="/Profil">Profil</a>
                 @if (oturum.Rol == "yonetici")
                 {
                     <a href="/Yonetim">Yönetim</a>
@@ -40,7 +41,7 @@
     </header>
 
     <main class="kapsayici">
-            @if (TempData["Basari"] is string basari)
+        @if (TempData["Basari"] is string basari)
         {
             <p class="bildirim bildirim-basari" role="status">@basari</p>
         }

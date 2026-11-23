@@ -31,6 +31,7 @@ public class MenuDeposu(OkumaDb okuma, YazmaDb yazma, VeriKaynagi kaynak)
         var bitis = baslangic.AddDays(7);
         return (from d in db.MenuDoluluklari
                 join m in db.Menuler on d.MenuId equals m.Id
+                join o in db.Ogunler on d.OgunId equals o.Id
                 where d.YemekhaneId == yemekhaneId && d.Tarih >= baslangic && d.Tarih < bitis
                 orderby d.Tarih, d.OgunId
                 select new HaftalikMenu
@@ -44,6 +45,7 @@ public class MenuDeposu(OkumaDb okuma, YazmaDb yazma, VeriKaynagi kaynak)
                     BosYer = d.BosYer,
                     OgrenciFiyati = m.OgrenciFiyati,
                     PersonelFiyati = m.PersonelFiyati,
+                    YarimPorsiyonOrani = o.YarimPorsiyonOrani,
                     RezervasyonDurumu = db.Rezervasyonlar
                         .Where(r => r.MenuId == d.MenuId && r.KullaniciId == oturum.Id)
                         .Select(r => r.Durum)

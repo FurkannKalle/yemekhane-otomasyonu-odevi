@@ -19,8 +19,8 @@ builder.Services.AddDbContext<OkumaDb>(o => o.UseMySql(Baglanti(ayar["DB_OKUMA_H
 var redis = ConnectionMultiplexer.Connect($"{ayar["REDIS_HOST"]}:{ayar["REDIS_PORT"]},abortConnect=false");
 builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
 
+// Form (antiforgery) ve TempData şifreleme anahtarları Redis'te: container yeniden kurulsa da geçerli kalır.
 builder.Services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "veri-koruma:anahtarlar");
-
 
 builder.Services.AddSingleton<OturumServisi>();
 builder.Services.AddScoped<KullaniciDeposu>();
@@ -34,6 +34,8 @@ builder.Services.AddScoped<DegerlendirmeServisi>();
 builder.Services.AddScoped<YonetimDeposu>();
 builder.Services.AddScoped<YonetimServisi>();
 builder.Services.AddScoped<MenuOnbellegi>();
+builder.Services.AddScoped<AlerjenDeposu>();   // Aşama 4
+builder.Services.AddScoped<ProfilServisi>();   // Aşama 4
 
 var app = builder.Build();
 
@@ -43,7 +45,6 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Hata");
 }
-
 
 app.Use(async (context, next) =>
 {

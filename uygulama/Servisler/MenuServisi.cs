@@ -3,10 +3,14 @@ using Yemekhane.Veri;
 
 namespace Yemekhane.Servisler;
 
-public class MenuServisi(MenuDeposu menuler, MenuOnbellegi onbellek)
+public class MenuServisi(MenuDeposu menuler, MenuOnbellegi onbellek, AlerjenDeposu alerjenler)
 {
     public static decimal FiyatSec(string rol, decimal ogrenciFiyati, decimal personelFiyati) =>
         rol == "ogrenci" ? ogrenciFiyati : personelFiyati;
+
+    // Aşama 4: yordamdaki ROUND(fiyat * oran, 2) ile aynı hesap. Oran yoksa o öğünde yarım porsiyon yok.
+    static decimal? YarimFiyat(decimal fiyat, decimal? oran) =>
+        oran is decimal o ? Math.Round(fiyat * o, 2, MidpointRounding.AwayFromZero) : null;
 
     public async Task<GunlukMenu?> GunlukAsync(OturumBilgisi oturum, int yemekhaneId, DateOnly tarih, int ogunId)
     {
@@ -15,20 +19,34 @@ public class MenuServisi(MenuDeposu menuler, MenuOnbellegi onbellek)
 
         var ilk = yemekler[0];   // menü bilgileri her satırda aynı
         var doluluk = (await menuler.DolulukAsync(ilk.MenuId))!;
+        var alerjenlerim = await alerjenler.KullanicininAsync(oturum);   // kişiye özel: önbelleğe girmez
+        var fiyat = FiyatSec(oturum.Rol, ilk.OgrenciFiyati, ilk.PersonelFiyati);
         return new GunlukMenu
         {
             Yemekhane = ilk.Yemekhane,
             Ogun = ilk.Ogun,
             Tarih = ilk.Tarih,
-            Fiyat = FiyatSec(oturum.Rol, ilk.OgrenciFiyati, ilk.PersonelFiyati),
+            Fiyat = fiyat,
+            YarimFiyat = YarimFiyat(fiyat, ilk.YarimPorsiyonOrani),
             ToplamKalori = yemekler.Sum(y => y.Kalori),
             Kapasite = doluluk.Kapasite,
             BosYer = doluluk.BosYer,
             RezervasyonSon = ilk.RezervasyonSon,
             RezervasyonAcik = doluluk.RezervasyonAcik,
             Yemekler = yemekler,
+            AlerjenUyarilari = AlerjenUyarilari(yemekler, alerjenlerim),
         };
     }
+
+    // Aşama 4: her yemek için, kullanıcının alerjenlerinden o yemekte bulunanlar (yalnızca eşleşen yemekler döner).
+    static Dictionary<string, List<string>> AlerjenUyarilari(List<MenuDetay> yemekler, List<Alerjen> alerjenlerim) =>
+        yemekler
+            .Select(y => (y.Yemek, Eslesen: alerjenlerim
+                .Where(a => (y.AlerjenIdler ?? "").Split(',').Contains(a.Id.ToString()))
+                .Select(a => a.Ad)
+                .ToList()))
+            .Where(x => x.Eslesen.Count > 0)
+            .ToDictionary(x => x.Yemek, x => x.Eslesen);
 
     public async Task<List<HaftalikMenu>> HaftalikAsync(OturumBilgisi oturum, int yemekhaneId, DateOnly baslangic)
     {
@@ -36,6 +54,7 @@ public class MenuServisi(MenuDeposu menuler, MenuOnbellegi onbellek)
         foreach (var m in liste)
         {
             m.Fiyat = FiyatSec(oturum.Rol, m.OgrenciFiyati, m.PersonelFiyati);
+            m.YarimFiyat = YarimFiyat(m.Fiyat, m.YarimPorsiyonOrani);
             m.Durum = DurumBelirle(m);
         }
         return liste;

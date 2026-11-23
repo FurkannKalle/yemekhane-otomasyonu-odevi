@@ -6,7 +6,6 @@ namespace Yemekhane.Controllers;
 
 public class RezervasyonController(RezervasyonDeposu rezervasyonlar) : OturumluController
 {
-    
     public async Task<IActionResult> Index(string? durum = null)
     {
         var liste = await rezervasyonlar.ListeleAsync(Oturum);
@@ -14,19 +13,18 @@ public class RezervasyonController(RezervasyonDeposu rezervasyonlar) : OturumluC
         return View(durum is null ? liste : liste.Where(r => r.Durum == durum).ToList());
     }
 
-    
+    // Aşama 4: porsiyon formdaki düğmeden gelir ('tam' / 'yarim'); geçersiz değeri yordam reddeder.
     [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Yap(int menuId, int yemekhaneId, string baslangic)
+    public async Task<IActionResult> Yap(int menuId, int yemekhaneId, string baslangic, string porsiyon = "tam")
     {
         try
         {
-            var sonuc = await rezervasyonlar.YapAsync(Oturum.Id, menuId);
-
-            TempData["Basari"] = $"Rezervasyon yapıldı. Ücret {sonuc.Ucret:C}, kalan bakiye {sonuc.Bakiye:C}.";
+            var sonuc = await rezervasyonlar.YapAsync(Oturum.Id, menuId, porsiyon);
+            var porsiyonAdi = porsiyon == "yarim" ? "yarım porsiyon" : "tam porsiyon";
+            TempData["Basari"] = $"Rezervasyon yapıldı ({porsiyonAdi}). Ücret {sonuc.Ucret:C}, kalan bakiye {sonuc.Bakiye:C}.";
         }
         catch (MySqlException hata) when (hata.Number == 1644)
         {
-            
             TempData["Hata"] = hata.Message;
         }
         return RedirectToAction("Haftalik", "Menu", new { yemekhaneId, baslangic });

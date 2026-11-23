@@ -58,11 +58,19 @@
 
                     @if (m.Durum == "acik")
                     {
-                        <form asp-controller="Rezervasyon" asp-action="Yap" method="post">
+                        <form asp-controller="Rezervasyon" asp-action="Yap" method="post" class="porsiyon-sec">
                             <input type="hidden" name="menuId" value="@m.MenuId" />
                             <input type="hidden" name="yemekhaneId" value="@Model.YemekhaneId" />
                             <input type="hidden" name="baslangic" value="@Model.Baslangic.ToString("yyyy-MM-dd")" />
-                            <button type="submit" class="dugme">Rezervasyon yap</button>
+                            @if (m.YarimFiyat is decimal yarim)
+                            {
+                                <button type="submit" name="porsiyon" value="tam" class="dugme">Tam porsiyon · @m.Fiyat.ToString("C")</button>
+                                <button type="submit" name="porsiyon" value="yarim" class="dugme dugme-ikincil">Yarım porsiyon · @yarim.ToString("C")</button>
+                            }
+                            else
+                            {
+                                <button type="submit" name="porsiyon" value="tam" class="dugme">Rezervasyon yap</button>
+                            }
                         </form>
                     }
                     else

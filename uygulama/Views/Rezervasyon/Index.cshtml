@@ -31,7 +31,9 @@
             <h2>@r.Tarih.ToString("d MMMM dddd") · @r.Ogun</h2>
             <span class="rozet rozet-@r.Durum">@durumAdi[r.Durum]</span>
         </div>
-        <p class="soluk">@r.Yemekhane · Ücret <strong>@r.Ucret.ToString("C")</strong></p>
+        <p class="soluk">
+            @r.Yemekhane · @(r.Porsiyon == "yarim" ? "Yarım porsiyon" : "Tam porsiyon") · Ücret <strong>@r.Ucret.ToString("C")</strong>
+        </p>
 
         @if (r.IptalEdilebilir)
         {

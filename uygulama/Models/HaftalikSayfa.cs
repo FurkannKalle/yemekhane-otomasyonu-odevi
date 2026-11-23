@@ -10,7 +10,7 @@ public class HaftalikSayfa
 
 public class HaftalikMenu
 {
-
+    // Veritabanından gelenler
     public int MenuId { get; set; }
     public DateOnly Tarih { get; set; }
     public int OgunId { get; set; }
@@ -20,9 +20,11 @@ public class HaftalikMenu
     public int BosYer { get; set; }
     public decimal OgrenciFiyati { get; set; }
     public decimal PersonelFiyati { get; set; }
-    public string? RezervasyonDurumu { get; set; }   
+    public decimal? YarimPorsiyonOrani { get; set; }   // Aşama 4
+    public string? RezervasyonDurumu { get; set; }
 
-    
+    // Servis katmanında hesaplananlar
     public decimal Fiyat { get; set; }
-    public string Durum { get; set; } = "";           
+    public decimal? YarimFiyat { get; set; }           // Aşama 4: null ise yarım porsiyon yok
+    public string Durum { get; set; } = "";
 }

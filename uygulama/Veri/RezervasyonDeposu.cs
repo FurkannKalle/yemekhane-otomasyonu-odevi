@@ -6,12 +6,13 @@ namespace Yemekhane.Veri;
 
 public class RezervasyonDeposu(YazmaDb yazma, VeriKaynagi kaynak)
 {
-    public async Task<RezervasyonSonucu> YapAsync(int kullaniciId, int menuId)
+    // Aşama 4: porsiyon ('tam' / 'yarim') yordama üçüncü parametre olarak gider; kuralları yordam denetler.
+    public async Task<RezervasyonSonucu> YapAsync(int kullaniciId, int menuId, string porsiyon)
     {
         var sonuc = await yazma.Database
-            .SqlQuery<RezervasyonSonucu>($"CALL sp_rezervasyon_yap({kullaniciId}, {menuId})")
+            .SqlQuery<RezervasyonSonucu>($"CALL sp_rezervasyon_yap({kullaniciId}, {menuId}, {porsiyon})")
             .ToListAsync();
-        return sonuc[0];   
+        return sonuc[0];
     }
 
     public async Task<IptalSonucu> IptalAsync(int kullaniciId, int rezervasyonId)
@@ -19,7 +20,7 @@ public class RezervasyonDeposu(YazmaDb yazma, VeriKaynagi kaynak)
         var sonuc = await yazma.Database
             .SqlQuery<IptalSonucu>($"CALL sp_rezervasyon_iptal({kullaniciId}, {rezervasyonId})")
             .ToListAsync();
-        return sonuc[0];   
+        return sonuc[0];
     }
 
     public Task<List<RezervasyonSatiri>> ListeleAsync(OturumBilgisi oturum)
@@ -33,6 +34,7 @@ public class RezervasyonDeposu(YazmaDb yazma, VeriKaynagi kaynak)
                 {
                     Id = r.Id,
                     Durum = r.Durum,
+                    Porsiyon = r.Porsiyon,
                     Ucret = r.Ucret,
                     Tarih = d.Tarih,
                     Ogun = d.Ogun,

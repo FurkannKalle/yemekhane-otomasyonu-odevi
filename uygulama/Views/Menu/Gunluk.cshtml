@@ -43,13 +43,27 @@ else
                 <h2>@m.Ogun · @m.Tarih.ToString("d MMMM dddd")</h2>
                 <p class="soluk">@m.Yemekhane</p>
             </div>
-            <span class="fiyat">@m.Fiyat.ToString("C")</span>
+            <div class="fiyatlar">
+                <span class="fiyat">@m.Fiyat.ToString("C")</span>
+                @if (m.YarimFiyat is decimal yarim)
+                {
+                    <span class="soluk">Yarım porsiyon @yarim.ToString("C")</span>
+                }
+            </div>
         </header>
+
+        @if (m.AlerjenUyarilari.Count > 0)
+        {
+            <p class="bildirim bildirim-hata" role="alert">
+                Bu menüde alerjenlerinizi içeren @m.AlerjenUyarilari.Count yemek var. İlgili yemekler aşağıda işaretli.
+            </p>
+        }
 
         <ul class="yemekler">
             @foreach (var y in m.Yemekler)
             {
-                <li class="yemek">
+                var uyarili = m.AlerjenUyarilari.TryGetValue(y.Yemek, out var uyari);
+                <li class="yemek @(uyarili ? "yemek-uyari" : "")">
                     <div class="yemek-satir">
                         <span class="yemek-kategori">@y.Kategori</span>
                         <span class="soluk">@y.Kalori kcal</span>
@@ -69,6 +83,10 @@ else
                             <span>Alerjen: @y.Alerjenler</span>
                         }
                     </div>
+                    @if (uyarili)
+                    {
+                        <p class="alerjen-uyari">⚠ Alerjeniniz: @string.Join(", ", uyari!)</p>
+                    }
                 </li>
             }
         </ul>

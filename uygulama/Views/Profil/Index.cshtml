@@ -1,0 +1,25 @@
+@model ProfilSayfasi
+@{
+    ViewData["Title"] = "Profil";
+}
+<h1>Profil</h1>
+
+<form asp-action="Kaydet" method="post" class="kart">
+    <fieldset class="yemek-sec">
+        <legend>Alerjenlerim</legend>
+        <p class="soluk">Seçtiğiniz alerjenleri içeren yemekler günün menüsünde uyarıyla gösterilir.</p>
+        <div class="secenekler">
+            @foreach (var a in Model.Alerjenler)
+            {
+                <label class="secenek">
+                    <input type="checkbox" name="alerjenIdler" value="@a.Id" checked="@Model.Secili.Contains(a.Id)" />
+                    @a.Ad
+                </label>
+            }
+        </div>
+    </fieldset>
+
+    <div class="dugmeler">
+        <button type="submit" class="dugme">Kaydet</button>
+    </div>
+</form>

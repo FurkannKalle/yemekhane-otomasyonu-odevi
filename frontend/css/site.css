@@ -133,3 +133,8 @@ details.kart > summary h2 { margin: 0; }
 .dugmeler { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
 .doluluk { display: grid; gap: 0.2rem; min-width: 8rem; }
 meter { width: 100%; height: 0.6rem; }
+.fiyatlar { display: flex; flex-direction: column; align-items: flex-end; gap: .15rem; }
+.porsiyon-sec { display: flex; flex-wrap: wrap; gap: .5rem; }
+.porsiyon-sec .dugme { flex: 1 1 9rem; }
+.yemek-uyari { border-left: 4px solid #c2410c; background: #fff7ed; padding-left: .75rem; }
+.alerjen-uyari { margin: .35rem 0 0; color: #9a3412; font-weight: 600; }
