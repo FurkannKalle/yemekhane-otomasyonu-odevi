@@ -10,7 +10,6 @@ public class Alerjen
     public string Ad { get; set; } = "";
 }
 
-// Aşama 4: kullanıcının profilinde seçtiği alerjenler (çoka çok)
 [Table("kullanici_alerjenleri"), PrimaryKey(nameof(KullaniciId), nameof(AlerjenId))]
 public class KullaniciAlerjeni
 {

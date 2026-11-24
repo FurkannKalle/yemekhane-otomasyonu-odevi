@@ -17,7 +17,7 @@ public class Ogun
     public int Id { get; set; }
     public string Ad { get; set; } = "";
     public int Sira { get; set; }
-    public decimal? YarimPorsiyonOrani { get; set; }   // Aşama 4: null ise bu öğünde yarım porsiyon yok
+    public decimal? YarimPorsiyonOrani { get; set; }
 }
 
 [Keyless, Table("v_menu_detay")]
@@ -30,7 +30,7 @@ public class MenuDetay
     public int OgunId { get; set; }
     public string Ogun { get; set; } = "";
     public DateTime RezervasyonSon { get; set; }
-    public decimal? YarimPorsiyonOrani { get; set; }   // Aşama 4
+    public decimal? YarimPorsiyonOrani { get; set; }
     public decimal OgrenciFiyati { get; set; }
     public decimal PersonelFiyati { get; set; }
     public string Yemek { get; set; } = "";
@@ -77,7 +77,7 @@ public class Rezervasyon
     public int KullaniciId { get; set; }
     public int MenuId { get; set; }
     public string Durum { get; set; } = "";
-    public string Porsiyon { get; set; } = "tam";      // Aşama 4: 'tam' ya da 'yarim'
+    public string Porsiyon { get; set; } = "tam";
     public decimal Ucret { get; set; }
     public DateTime Olusturma { get; set; }
     public DateTime? KullanmaZamani { get; set; }

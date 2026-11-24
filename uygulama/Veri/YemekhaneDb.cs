@@ -21,8 +21,8 @@ public abstract class YemekhaneDb : DbContext
     public DbSet<Yemek> Yemekler => Set<Yemek>();
     public DbSet<YemekKategorisi> YemekKategorileri => Set<YemekKategorisi>();
     public DbSet<MenuPuan> MenuPuanlari => Set<MenuPuan>();
-    public DbSet<Alerjen> Alerjenler => Set<Alerjen>();                              // Aşama 4
-    public DbSet<KullaniciAlerjeni> KullaniciAlerjenleri => Set<KullaniciAlerjeni>();  // Aşama 4
+    public DbSet<Alerjen> Alerjenler => Set<Alerjen>();
+    public DbSet<KullaniciAlerjeni> KullaniciAlerjenleri => Set<KullaniciAlerjeni>();
 
     protected override void OnModelCreating(ModelBuilder model)
     {

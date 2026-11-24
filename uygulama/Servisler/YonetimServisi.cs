@@ -72,7 +72,6 @@ public class YonetimServisi(YonetimDeposu depo, MenuOnbellegi onbellek)
 
                 await depo.KaydetAsync();
 
-                // Menü başka bir yemekhane/tarih/öğüne taşındıysa eski anahtar da temizlenir.
                 if (kimlikDegisti)
                     await onbellek.YenileAsync(eski.YemekhaneId, eski.Tarih, eski.OgunId);
             }
@@ -86,7 +85,6 @@ public class YonetimServisi(YonetimDeposu depo, MenuOnbellegi onbellek)
             return "Seçilen yemekhane, öğün ya da yemeklerden biri bulunamadı.";
         }
 
-        // Kayıt başarılı: menünün önbellek kaydı silinir ve kaynaktan yeniden doldurulur.
         await onbellek.YenileAsync(f.YemekhaneId, tarih, f.OgunId);
         return null;
     }

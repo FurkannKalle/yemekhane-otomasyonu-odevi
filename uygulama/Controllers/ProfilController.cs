@@ -5,7 +5,6 @@ using Yemekhane.Veri;
 
 namespace Yemekhane.Controllers;
 
-// Aşama 4: profil sayfası, kullanıcı alerjenlerini seçer
 public class ProfilController(AlerjenDeposu alerjenler, ProfilServisi servis) : OturumluController
 {
     public async Task<IActionResult> Index() =>

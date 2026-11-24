@@ -6,7 +6,6 @@ namespace Yemekhane.Veri;
 
 public class RezervasyonDeposu(YazmaDb yazma, VeriKaynagi kaynak)
 {
-    // Aşama 4: porsiyon ('tam' / 'yarim') yordama üçüncü parametre olarak gider; kuralları yordam denetler.
     public async Task<RezervasyonSonucu> YapAsync(int kullaniciId, int menuId, string porsiyon)
     {
         var sonuc = await yazma.Database

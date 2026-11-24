@@ -12,7 +12,6 @@ public class MenuDeposu(OkumaDb okuma, YazmaDb yazma, VeriKaynagi kaynak)
     public Task<List<Ogun>> OgunlerAsync() =>
         okuma.Ogunler.AsNoTracking().OrderBy(o => o.Sira).ToListAsync();
 
-    // Normalde replikadan; yönetici değişikliğinden sonra önbellek yenilenirken kaynaktan.
     public Task<List<MenuDetay>> DetayAsync(int yemekhaneId, DateOnly tarih, int ogunId, bool kaynaktan = false) =>
         (kaynaktan ? (YemekhaneDb)yazma : okuma).MenuDetaylari
             .Where(d => d.YemekhaneId == yemekhaneId && d.Tarih == tarih && d.OgunId == ogunId)

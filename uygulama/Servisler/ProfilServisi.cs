@@ -4,7 +4,6 @@ using Yemekhane.Veri;
 
 namespace Yemekhane.Servisler;
 
-// Aşama 4: profil sayfasındaki alerjen seçiminin kaydı
 public class ProfilServisi(AlerjenDeposu alerjenler)
 {
     public async Task<string?> KaydetAsync(int kullaniciId, List<int> alerjenIdler)

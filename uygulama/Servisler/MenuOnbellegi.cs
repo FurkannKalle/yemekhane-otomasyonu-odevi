@@ -8,7 +8,6 @@ namespace Yemekhane.Servisler;
 
 public class MenuOnbellegi(IConnectionMultiplexer redis, MenuDeposu menuler, ILogger<MenuOnbellegi> gunluk)
 {
-    // Türkçe harfler JSON'da \u00e7 gibi kaçışlanmasın, redis-cli çıktısı okunur olsun.
     static readonly JsonSerializerOptions Json = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
     readonly IDatabase redisDb = redis.GetDatabase();
@@ -16,7 +15,6 @@ public class MenuOnbellegi(IConnectionMultiplexer redis, MenuDeposu menuler, ILo
     static string Anahtar(int yemekhaneId, DateOnly tarih, int ogunId) =>
         $"menu:{yemekhaneId}:{tarih:yyyy-MM-dd}:{ogunId}";
 
-    // Menünün günü bitene kadar; geçmiş bir günse bugün bitene kadar.
     static TimeSpan GunSonunaKadar(DateOnly tarih)
     {
         var gunSonu = tarih.ToDateTime(TimeOnly.MinValue).AddDays(1);
@@ -39,8 +37,6 @@ public class MenuOnbellegi(IConnectionMultiplexer redis, MenuDeposu menuler, ILo
         return await DoldurAsync(anahtar, yemekhaneId, tarih, ogunId, kaynaktan: false);
     }
 
-    // Yönetici menüyü kaydedince çağrılır: eski kayıt silinir, menü kaynaktan okunup yeniden yazılır.
-    // Replikadan okusaydık, gecikme anında eski menü gün sonuna kadar önbellekte kalabilirdi.
     public async Task YenileAsync(int yemekhaneId, DateOnly tarih, int ogunId)
     {
         var anahtar = Anahtar(yemekhaneId, tarih, ogunId);

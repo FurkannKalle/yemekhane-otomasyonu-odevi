@@ -1,37 +1,17 @@
--- =====================================================================
--- Yemekhane Otomasyonu · Aşama 4 değişiklik talebi (migration)
---   1. Yarım porsiyon: öğle ve akşamda seçilebilir, ücret tam fiyatın %60'ı.
---      Kahvaltıda yarım porsiyon yok. Geçmiş rezervasyonlar tam porsiyon sayılır.
---   2. Alerjen uyarısı: kullanıcı profilinde kendi alerjenlerini seçer.
--- Çalışan sistemde kaynakta (mysql-primary) bir kez çalıştırılır; replikaya
--- binlog üzerinden geçer. Temiz kurulumda 01 ve 02'den sonra kendiliğinden çalışır.
--- Mevcut satırlar silinmez; yalnızca tablo, sütun ve yordam eklenir/güncellenir.
--- =====================================================================
 SET NAMES utf8mb4;
 USE yemekhane;
 
--- ---------------------------------------------------------------------
--- 1a. Öğün bazında yarım porsiyon oranı (NULL = bu öğünde yarım porsiyon yok).
---     Hangi öğünde ve yüzde kaç olduğu kodda değil, veride durur.
--- ---------------------------------------------------------------------
 ALTER TABLE ogunler
     ADD COLUMN yarim_porsiyon_orani DECIMAL(3,2) NULL
         COMMENT 'yarım porsiyon ücreti / tam ücret; NULL ise yarım porsiyon yok',
     ADD CONSTRAINT ck_ogun_yarim_oran CHECK (yarim_porsiyon_orani > 0 AND yarim_porsiyon_orani < 1);
 
-UPDATE ogunler SET yarim_porsiyon_orani = 0.60 WHERE id IN (2, 3);  -- Öğle, Akşam
+UPDATE ogunler SET yarim_porsiyon_orani = 0.60 WHERE id IN (2, 3);
 
--- ---------------------------------------------------------------------
--- 1b. Rezervasyonun porsiyonu. Mevcut (geçmiş) satırlar DEFAULT ile 'tam' olur.
---     INSTANT: tablo kopyalanmaz ve kilitlenmez, çalışan sistemde anında biter.
--- ---------------------------------------------------------------------
 ALTER TABLE rezervasyonlar
     ADD COLUMN porsiyon ENUM('tam','yarim') NOT NULL DEFAULT 'tam' AFTER durum,
     ALGORITHM=INSTANT;
 
--- ---------------------------------------------------------------------
--- 2. Kullanıcının alerjenleri (çoka çok). Kullanıcı silinirse seçimleri de silinir.
--- ---------------------------------------------------------------------
 CREATE TABLE kullanici_alerjenleri (
     kullanici_id  INT UNSIGNED     NOT NULL,
     alerjen_id    TINYINT UNSIGNED NOT NULL,
@@ -40,10 +20,6 @@ CREATE TABLE kullanici_alerjenleri (
     CONSTRAINT fk_ka_alerjen   FOREIGN KEY (alerjen_id)   REFERENCES alerjenler (id)
 ) ENGINE=InnoDB;
 
--- ---------------------------------------------------------------------
--- 3. Menü görünümüne öğünün yarım porsiyon oranı eklenir
---    (günün menüsü ekranı yarım porsiyon fiyatını da gösterebilsin diye).
--- ---------------------------------------------------------------------
 CREATE OR REPLACE VIEW v_menu_detay AS
 SELECT
     m.id                AS menu_id,
@@ -77,12 +53,6 @@ JOIN menu_yemekleri     my ON my.menu_id = m.id
 JOIN yemekler           y  ON y.id  = my.yemek_id
 JOIN yemek_kategorileri k  ON k.id  = y.kategori_id;
 
--- ---------------------------------------------------------------------
--- 4. sp_rezervasyon_yap(kullanici_id, menu_id, porsiyon)
---    porsiyon: 'tam' ya da 'yarim'. Yarım porsiyon yalnızca oranı tanımlı
---    öğünlerde seçilebilir; ücret = rolüne göre tam fiyat x oran.
---    Dönen satır değişmedi: rezervasyon_id, ucret, bakiye
--- ---------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS sp_rezervasyon_yap;
 
 DELIMITER $$
@@ -177,7 +147,7 @@ BEGIN
         VALUES (p_kullanici_id, p_menu_id, 'aktif', p_porsiyon, v_ucret);
         SET v_rez_id = LAST_INSERT_ID();
     ELSE
-        -- Daha önce iptal edilmiş kayıt yeniden etkinleşir (porsiyon yeni seçimle)
+        -- Daha önce iptal edilmiş kayıt yeniden etkinleşir
         UPDATE rezervasyonlar
            SET durum = 'aktif', porsiyon = p_porsiyon, ucret = v_ucret, olusturma = NOW(),
                iptal_zamani = NULL, kullanma_zamani = NULL

@@ -13,7 +13,6 @@ public class RezervasyonController(RezervasyonDeposu rezervasyonlar) : OturumluC
         return View(durum is null ? liste : liste.Where(r => r.Durum == durum).ToList());
     }
 
-    // Aşama 4: porsiyon formdaki düğmeden gelir ('tam' / 'yarim'); geçersiz değeri yordam reddeder.
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Yap(int menuId, int yemekhaneId, string baslangic, string porsiyon = "tam")
     {

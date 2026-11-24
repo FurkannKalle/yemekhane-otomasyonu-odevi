@@ -4,7 +4,7 @@ public class RezervasyonSatiri
 {
     public int Id { get; set; }
     public string Durum { get; set; } = "";
-    public string Porsiyon { get; set; } = "";         // Aşama 4
+    public string Porsiyon { get; set; } = "";
     public decimal Ucret { get; set; }
     public DateOnly Tarih { get; set; }
     public string Ogun { get; set; } = "";

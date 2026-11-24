@@ -8,18 +8,17 @@ public class MenuServisi(MenuDeposu menuler, MenuOnbellegi onbellek, AlerjenDepo
     public static decimal FiyatSec(string rol, decimal ogrenciFiyati, decimal personelFiyati) =>
         rol == "ogrenci" ? ogrenciFiyati : personelFiyati;
 
-    // Aşama 4: yordamdaki ROUND(fiyat * oran, 2) ile aynı hesap. Oran yoksa o öğünde yarım porsiyon yok.
     static decimal? YarimFiyat(decimal fiyat, decimal? oran) =>
         oran is decimal o ? Math.Round(fiyat * o, 2, MidpointRounding.AwayFromZero) : null;
 
     public async Task<GunlukMenu?> GunlukAsync(OturumBilgisi oturum, int yemekhaneId, DateOnly tarih, int ogunId)
     {
         var yemekler = await onbellek.DetayAsync(yemekhaneId, tarih, ogunId);
-        if (yemekler.Count == 0) return null;   // bu seçim için menü yok
+        if (yemekler.Count == 0) return null;
 
-        var ilk = yemekler[0];   // menü bilgileri her satırda aynı
+        var ilk = yemekler[0];
         var doluluk = (await menuler.DolulukAsync(ilk.MenuId))!;
-        var alerjenlerim = await alerjenler.KullanicininAsync(oturum);   // kişiye özel: önbelleğe girmez
+        var alerjenlerim = await alerjenler.KullanicininAsync(oturum);
         var fiyat = FiyatSec(oturum.Rol, ilk.OgrenciFiyati, ilk.PersonelFiyati);
         return new GunlukMenu
         {
@@ -38,7 +37,6 @@ public class MenuServisi(MenuDeposu menuler, MenuOnbellegi onbellek, AlerjenDepo
         };
     }
 
-    // Aşama 4: her yemek için, kullanıcının alerjenlerinden o yemekte bulunanlar (yalnızca eşleşen yemekler döner).
     static Dictionary<string, List<string>> AlerjenUyarilari(List<MenuDetay> yemekler, List<Alerjen> alerjenlerim) =>
         yemekler
             .Select(y => (y.Yemek, Eslesen: alerjenlerim

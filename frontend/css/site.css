@@ -115,7 +115,6 @@ main.kapsayici { padding-block: 1.25rem 3rem; }
 .yildiz { color: var(--vurgu); font-size: 1.15rem; letter-spacing: 0.1em; }
 .liste-kart textarea { width: 100%; margin-bottom: 0.5rem; }
 
-/* Yönetici paneli */
 details.kart > summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; min-height: 44px; }
 details.kart > summary::-webkit-details-marker { display: none; }
 details.kart > summary::after { content: "+"; font-size: 1.5rem; color: var(--ana); }
